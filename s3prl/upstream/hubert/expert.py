@@ -34,13 +34,17 @@ class UpstreamExpert(UpstreamBase):
         self.model.encoder.layerdrop = 0.0
 
         if len(self.hooks) == 0:
-            module_name = "self.model.encoder.layers"
-            for module_id in range(len(eval(module_name))):
-                self.add_hook(
-                    f"{module_name}[{module_id}]",
-                    lambda input, output: input[0].transpose(0, 1),
-                )
-            self.add_hook("self.model.encoder", lambda input, output: output[0])
+            def register_all_hooks(self):
+                module_name = "self.model.encoder.layers"
+                for module_id in range(len(eval(module_name))):
+                    self.add_hook(
+                        f"{module_name}[{module_id}]",
+                        lambda input, output: input[0].transpose(0, 1),
+                    )
+                self.add_hook("self.model.encoder", lambda input, output: output[0])
+
+            self.register_all_hooks = self.register_all_hooks
+            self.register_all_hooks()
 
             def postprocess(xs):
                 names, hiddens = zip(*xs)
