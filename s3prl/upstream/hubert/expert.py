@@ -43,7 +43,7 @@ class UpstreamExpert(UpstreamBase):
                     )
                 self.add_hook("self.model.encoder", lambda input, output: output[0])
 
-            self.register_all_hooks = self.register_all_hooks
+            self.register_all_hooks = register_all_hooks
             self.register_all_hooks()
 
             def postprocess(xs):
